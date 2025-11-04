@@ -1,5 +1,9 @@
 # Lopix: Pixel Art Toolkit
 
+Render pixel art (PNG/GIF) from code!
+
+## Quick start
+
 To install:
 ```
 go install github.com/ejuju/lopix@latest
@@ -7,10 +11,10 @@ go install github.com/ejuju/lopix@latest
 
 Usage:
 ```
-lopix {"png" or "gif"} {input file path} {output file path} {scaling factor}
+lopix {"png" or "gif"} {input_lopix_file} {output_file_path} {scaling_factor}
 ```
 
-## Introduction
+## Lopix text format
 
 Lopix relies on a simple code format for declaring grids of colored pixels.
 In the end, all we need to know to render an image is the dimensions of the pixel grid (width and height),
