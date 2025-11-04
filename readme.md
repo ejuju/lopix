@@ -10,6 +10,56 @@ Usage:
 lopix {"png" or "gif"} {input file path} {output file path} {scaling factor}
 ```
 
+## Introduction
+
+Lopix relies on a simple code format for declaring grids of colored pixels.
+In the end, all we need to know to render an image is the dimensions of the pixel grid (width and height),
+and which colors to assign to each pixel.
+
+In order to do so, you start by declaring the width and height at the beggining of the Lopix file, for example:
+```
+5x6
+```
+This declares that the width of the grid is 5 pixels and its height is 6 pixels.
+
+Then on the next lines we declare a color palette to use
+(a maximum of 16 colors can be specified: one per line, in hexadecimal RGBA format):
+```
+#ff0000
+#00ff00
+#0000ff
+```
+
+Then you can assign colors to each pixel, using index of the color to use in the palette defined above
+(ranging from `0` for the first one, `f` for the sixteenth color):
+```
+00000
+01220
+01220
+01220
+01110
+00000
+```
+
+NB: You must leave a blank line after the color palette and terminate each grid row with a trailing line feed.
+
+Which gives us the following file all together:
+```
+5x6
+#ff0000
+#00ff00
+#0000ff
+
+00000
+01220
+01220
+01220
+01110
+00000
+```
+
+You can now render this file as PNG using our CLI or our Go library.
+
 ## Examples
 
 ### Generate a PNG (using CLI)
