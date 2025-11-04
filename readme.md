@@ -1,4 +1,4 @@
-# LoPix: Generate pixel art from code!
+# Lopix: Generate pixel art from code!
 
 To install:
 ```
