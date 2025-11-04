@@ -7,7 +7,6 @@ import (
 	"image"
 	"image/png"
 	"io"
-	"math"
 	"strconv"
 	"strings"
 )
@@ -29,19 +28,6 @@ type Frame struct {
 
 func (a *Frame) W() int { return a.w }
 func (a *Frame) H() int { return a.h }
-
-func F(w, h int, p Palette, rows ...string) (f *Frame) {
-	if w > math.MaxUint8 || w < 0 {
-		panic(fmt.Errorf("invalid width: %d", w))
-	} else if h > math.MaxUint8 || h < 0 {
-		panic(fmt.Errorf("invalid height: %d", h))
-	}
-	grid, err := ParseGrid(rows, w, h)
-	if err != nil {
-		panic(fmt.Errorf("parse grid: %w", err))
-	}
-	return &Frame{w, h, p, grid}
-}
 
 func (a *Frame) Image() (img *image.RGBA) {
 	img = image.NewRGBA(image.Rect(0, 0, a.w, a.h))
@@ -164,21 +150,4 @@ func (f *Frame) WriteTo(w io.Writer) (n int64, err error) {
 	}
 
 	return b.WriteTo(w)
-}
-
-func ParseGrid(rows []string, w, h int) (grid []byte, err error) {
-	grid = make([]byte, w*h)
-	for y, row := range rows {
-		if len(row) != w {
-			return nil, fmt.Errorf("at row %d: %d bytes doesn't match declared width %d", y, len(row), w)
-		}
-		for x := range w {
-			cell := hexToU4(row[x])
-			if cell > 0x0F {
-				return nil, fmt.Errorf("at row %d: invalid reserved cell value %d", y, cell)
-			}
-			grid[y*w+(x%w)] = cell
-		}
-	}
-	return grid, nil
 }

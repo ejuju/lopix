@@ -1,44 +1,23 @@
 package main
 
 import (
+	"bytes"
+	_ "embed"
 	"os"
 
 	"github.com/ejuju/lopix/pkg/lopix"
 )
 
+//go:embed demo.lopix
+var src []byte
+
 func main() {
-	// Define dimensions.
-	const width, height = 16, 16
-
-	// Define color palette.
-	palette := lopix.Palette{
-		lopix.C("#d6d6d6"),
-		lopix.C("#ff4000"),
-		lopix.C("#242424"),
+	frame := &lopix.Frame{}
+	_, err := frame.ReadFrom(bytes.NewReader(src))
+	if err != nil {
+		panic(err)
 	}
-
-	// Define pixel grid.
-	frame := lopix.F(width, height, palette,
-		"0000000000000000",
-		"0000000220000000",
-		"0000000200000000",
-		"0011111111111100",
-		"0011111111111100",
-		"0011111111111100",
-		"0011121111211100",
-		"0011121111211100",
-		"0011122112211100",
-		"0011111111111100",
-		"0011212121121100",
-		"0011222222221100",
-		"0011112121211100",
-		"0011111111111100",
-		"0000000000000000",
-		"0000000000000000",
-	)
-
-	// Encode PNG (scaling from 16x16 to 400x400 pixels).
-	err := frame.EncodePNG(os.Stdout, 400/width)
+	err = frame.EncodePNG(os.Stdout, 320/16)
 	if err != nil {
 		panic(err)
 	}

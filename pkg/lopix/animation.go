@@ -8,7 +8,6 @@ import (
 	"image/draw"
 	"image/gif"
 	"io"
-	"log"
 	"strconv"
 	"strings"
 )
@@ -29,21 +28,6 @@ type Animation struct {
 
 func (a *Animation) W() int { return a.w }
 func (a *Animation) H() int { return a.h }
-
-func Animate(w, h int, palette [16]Color, grids ...[]string) (v *Animation) {
-	v = &Animation{}
-	for range grids {
-		v.delays = append(v.delays, 30)
-	}
-	for _, rows := range grids {
-		grid, err := ParseGrid(rows, w, h)
-		if err != nil {
-			panic(err)
-		}
-		v.grids = append(v.grids, grid)
-	}
-	return v
-}
 
 func (a *Animation) EncodeGIF(w io.Writer, scale int) (err error) {
 	if len(a.delays) == 0 {
@@ -103,6 +87,9 @@ func (a *Animation) ReadFrom(r io.Reader) (n int64, err error) {
 	} else if frameDelay <= 0 || frameDelay > MaxFrameDelay {
 		return n, fmt.Errorf("invalid frame delay: %d", frameDelay)
 	}
+	for range numFrames {
+		a.delays = append(a.delays, frameDelay)
+	}
 
 	// Read dimensions line (where width and height are declared).
 	line, err = bufr.ReadString('\n')
@@ -150,7 +137,6 @@ func (a *Animation) ReadFrom(r io.Reader) (n int64, err error) {
 
 	// Read grids (grid by grid and row by row, with blank lines as seperators).
 	for frameI := range numFrames {
-		log.Printf("frame %d/%d", frameI, numFrames)
 		grid := make([]byte, a.w*a.h)
 		for y := range a.h {
 			// Read one row.
@@ -197,7 +183,7 @@ func (a *Animation) ReadFrom(r io.Reader) (n int64, err error) {
 	return n, nil
 }
 
-// NB: In the current implementation, the frame is encoded in memory before being written.
+// NB: In the current implementation, we encode the whole animation in memory before being written.
 func (a *Animation) WriteTo(w io.Writer) (n int64, err error) {
 	b := &bytes.Buffer{}
 
