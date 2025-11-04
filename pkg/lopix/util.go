@@ -5,6 +5,7 @@ import (
 	"image"
 )
 
+// NB: This only works for square images for now...
 func ScaleBy(factor int, img image.Image) image.Image {
 	scaled := image.NewRGBA(image.Rect(0, 0, img.Bounds().Dx()*factor, img.Bounds().Dy()*factor))
 
