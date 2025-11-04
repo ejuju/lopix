@@ -1,14 +1,12 @@
 package lopix
 
 import (
-	"bufio"
 	"bytes"
 	"fmt"
 	"image"
 	"image/png"
 	"io"
 	"strconv"
-	"strings"
 )
 
 const (
@@ -41,86 +39,26 @@ func (a *Frame) EncodePNG(w io.Writer, scale int) (err error) {
 	return png.Encode(w, ScaleBy(scale, a.Image()))
 }
 
-func (f *Frame) ReadFrom(r io.Reader) (n int64, err error) {
-	// Limit reads to maximum possible grid size (to prevent malicious large allocation attempts).
+func (f *Frame) ParseFrom(r io.Reader) (err error) {
 	r = io.LimitReader(r, int64(MaxEncodedFrameSize))
+	p := NewParser(r)
 
-	// Read dimensions line (where width and height are declared).
-	bufr := bufio.NewReader(r)
-	lineI := 0 // Line index.
-	line, err := bufr.ReadString('\n')
-	n += int64(len(line))
+	f.w, f.h, err = p.ParseDimensions()
 	if err != nil {
-		return n, fmt.Errorf("read first line: %w", err)
+		return fmt.Errorf("parse dimensions: %w", err)
 	}
-	lineI++
-	line = strings.TrimSpace(line)
-	parts := strings.Split(line, "x")
-	if len(parts) != 2 {
-		return n, fmt.Errorf("invalid first line: %q", line)
-	}
-	f.w, err = strconv.Atoi(parts[0])
+
+	f.palette, err = p.ParsePalette()
 	if err != nil {
-		return n, fmt.Errorf("invalid width: %w", err)
-	} else if f.w <= 0 || f.w > MaxWidth {
-		return n, fmt.Errorf("invalid width: %d", f.w)
+		return fmt.Errorf("parse palette: %w", err)
 	}
-	f.h, err = strconv.Atoi(parts[1])
+
+	f.grid, err = p.ParseGrid(f.w, f.h)
 	if err != nil {
-		return n, fmt.Errorf("invalid height: %w", err)
-	} else if f.h <= 0 || f.h > MaxHeight {
-		return n, fmt.Errorf("invalid height: %d", f.h)
+		return fmt.Errorf("parse grid: %w", err)
 	}
 
-	// Read palette of colors (NB: 16 colors maximum).
-	f.palette = Palette{}
-	for i := range 16 {
-		line, err = bufr.ReadString('\n')
-		n += int64(len(line))
-		if err != nil {
-			return n, fmt.Errorf("read palette (at line %d): %w", lineI, err)
-		}
-		lineI++
-		line = strings.TrimSpace(line)
-		if line == "" {
-			break // Reached end of palette (= blank line).
-		}
-		f.palette[i], err = HexColor(line)
-		if err != nil {
-			return n, fmt.Errorf("parse palette color (at line %d): %w", lineI, err)
-		}
-	}
-
-	// Read grid (row by row).
-	f.grid = make([]byte, f.w*f.h)
-	for y := range f.h {
-		// Read one row.
-		line, err = bufr.ReadString('\n')
-		n += int64(len(line))
-		if err != nil {
-			return n, fmt.Errorf("read grid row (at line %d): %w", lineI, err)
-		}
-		lineI++
-		line = strings.TrimSpace(line)
-
-		// Ensure that we have one character for each cell of the expected width.
-		if line == "" {
-			return n, fmt.Errorf("at line %d: unexpected blank line in grid: %w", lineI, err)
-		} else if len(line) != f.w {
-			return n, fmt.Errorf("at line %d: len(row) == %d bytes but width == %d", lineI, len(line), f.w)
-		}
-
-		// Parse row.
-		for x := range f.w {
-			cell := hexToU4(line[x])
-			if cell > 0x0F {
-				return n, fmt.Errorf("at line %d: invalid reserved cell value %d", lineI, cell)
-			}
-			f.grid[y*f.w+(x%f.w)] = cell
-		}
-	}
-
-	return n, nil
+	return nil
 }
 
 // NB: In the current implementation, the frame is encoded in memory before being written.

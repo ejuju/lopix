@@ -52,7 +52,7 @@ func Run(args ...string) (exitcode int) {
 		return 1
 	case "", "png":
 		v := &Frame{}
-		_, err = v.ReadFrom(fIn)
+		err = v.ParseFrom(fIn)
 		if err != nil {
 			log.Printf("parse frame: %s", err)
 			return 1
@@ -61,7 +61,7 @@ func Run(args ...string) (exitcode int) {
 
 	case "gif":
 		v := &Animation{}
-		_, err = v.ReadFrom(fIn)
+		err = v.ParseFrom(fIn)
 		if err != nil {
 			log.Printf("parse animation: %s", err)
 			return 1

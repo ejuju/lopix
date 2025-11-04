@@ -13,7 +13,7 @@ var src []byte
 
 func main() {
 	animation := &lopix.Animation{}
-	_, err := animation.ReadFrom(bytes.NewReader(src))
+	err := animation.ParseFrom(bytes.NewReader(src))
 	if err != nil {
 		panic(err)
 	}

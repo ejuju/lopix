@@ -106,7 +106,7 @@ Which results in:
 Generate a PNG:
 ```go
 v := &lopix.Frame{}
-_, err := v.ReadFrom(f)
+err := v.ParseFrom(f)
 if err != nil {
     panic(err)
 }
@@ -119,7 +119,7 @@ if err != nil {
 Generate a GIF:
 ```go
 v := &lopix.Animation{}
-_, err := v.ReadFrom(f)
+err := v.ParseFrom(f)
 if err != nil {
     panic(err)
 }

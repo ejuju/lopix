@@ -13,7 +13,7 @@ var src []byte
 
 func main() {
 	frame := &lopix.Frame{}
-	_, err := frame.ReadFrom(bytes.NewReader(src))
+	err := frame.ParseFrom(bytes.NewReader(src))
 	if err != nil {
 		panic(err)
 	}
