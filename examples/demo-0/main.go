@@ -12,9 +12,9 @@ func main() {
 
 	// Define color palette.
 	palette := lopix.Palette{
-		lopix.HexColor("#d6d6d6"),
-		lopix.HexColor("#ff4000"),
-		lopix.HexColor("#242424"),
+		lopix.C("#d6d6d6"),
+		lopix.C("#ff4000"),
+		lopix.C("#242424"),
 	}
 
 	// Define pixel grid.
