@@ -9,7 +9,7 @@ import (
 )
 
 func Run(args ...string) (exitcode int) {
-	return cli.Run(commands, commandGIF.Do, onCLICommandNotFound, args...)
+	return cli.Run(commands, onNoCommand, onCLICommandNotFound, args...)
 }
 
 func printAvailableCommands() {
@@ -21,6 +21,12 @@ func printAvailableCommands() {
 
 func onCLICommandNotFound(args ...string) (exitcode int) {
 	fmt.Printf("Command not found: %q\n\n", args[1])
+	printAvailableCommands()
+	return 1
+}
+
+func onNoCommand(args ...string) (exitcode int) {
+	fmt.Printf("A command is required!\n\n")
 	printAvailableCommands()
 	return 1
 }
