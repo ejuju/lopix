@@ -56,14 +56,23 @@ var commands = []*cli.Command{
 }
 
 func runParseAndEncode(args ...string) (exitcode int) {
-	if len(args) <= 4 {
-		fmt.Println("missing argument(s)")
+	if len(args) <= 1 {
+		fmt.Println("missing arguments: {format} {src} {out}")
+		return 1
+	} else if len(args) <= 2 {
+		fmt.Println("missing arguments: {src} {out}")
+		return 1
+	} else if len(args) <= 3 {
+		fmt.Println("missing arguments: {out}")
 		return 1
 	}
 	format := args[1]
 	fpathIn := args[2]
 	fpathOut := args[3]
-	scaleTxt := args[4]
+	scaleTxt := "1"
+	if len(args) >= 5 {
+		scaleTxt = args[4]
+	}
 
 	// Open input file.
 	fIn, err := os.Open(fpathIn)

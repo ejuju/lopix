@@ -11,7 +11,7 @@ go install github.com/ejuju/lopix@latest
 
 Usage:
 ```
-lopix {"png" or "gif"} {input_lopix_file} {output_file_path} {scaling_factor}
+lopix {"png" or "gif"} {input_lopix_file} {output_file_path}
 ```
 
 ## Lopix text format
@@ -95,7 +95,7 @@ To generate a PNG: first, define a frame (in a `.lopix` file), for example:
 
 And then render it:
 ```
-lopix png src.lopix out.png 20
+lopix png src.lopix out.png
 ```
 
 Which results in:  
@@ -148,7 +148,7 @@ To generate a GIF: first, define an animation (in a `.lopix` file), for example:
 
 And then render it:
 ```
-lopix gif src.lopix out.gif 20
+lopix gif src.lopix out.gif
 ```
 
 Which results in:  
