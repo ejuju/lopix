@@ -1,0 +1,120 @@
+# LoPix: Generate pixel art from code!
+
+LoPix allows you to generate pixel art from code.
+
+## Features
+
+- Define pixel art images from code (and render them as PNG)
+- Support animations (and render them as GIF)
+- Tiny codebase (with no 3rd party dependencies)
+
+## Examples
+
+### Pumpkin 16x16 PNG
+
+Generate a simple 16x16 pixel art of a pumpkin and export as PNG (in 400x400 pixels):
+
+```go
+// Define dimensions.
+const width, height = 16, 16
+
+// Define color palette.
+palette := lopix.Palette{
+	lopix.HexColor("#d6d6d6"),
+	lopix.HexColor("#ff4000"),
+	lopix.HexColor("#242424"),
+}
+
+// Define pixel grid.
+frame := lopix.F(width, height, palette,
+	"0000000000000000",
+	"0000000220000000",
+	"0000000200000000",
+	"0011111111111100",
+	"0011111111111100",
+	"0011111111111100",
+	"0011121111211100",
+	"0011121111211100",
+	"0011122112211100",
+	"0011111111111100",
+	"0011212121121100",
+	"0011222222221100",
+	"0011112121211100",
+	"0011111111111100",
+	"0000000000000000",
+	"0000000000000000",
+)
+
+// Encode PNG (scaling from 16x16 to 400x400 pixels).
+err := frame.EncodePNG(f, 400/width)
+if err != nil {
+	panic(err)
+}
+```
+
+Which results in:  
+![PNG of a pumpkin](/examples/frame/demo.png)
+
+### Pumpkin 16x16 GIF
+
+Generate a simple 16x16 pixel art animation of a pumpkin and export as GIF (in 400x400 pixels):
+```go
+// Define dimensions.
+const width, height = 16, 16
+
+// Define color palette.
+palette := lopix.Palette{
+	lopix.HexColor("#d6d6d6"),
+	lopix.HexColor("#ff4000"),
+	lopix.HexColor("#242424"),
+}
+
+// Define pixel grid.
+frame := lopix.Animate(width, height, palette,
+	[]string{
+		"0000000000000000",
+		"0000000220000000",
+		"0000000200000000",
+		"0011111111111100",
+		"0011111111111100",
+		"0011111111111100",
+		"0011121111211100",
+		"0011121111211100",
+		"0011122112211100",
+		"0011111111111100",
+		"0011212121121100",
+		"0011222222221100",
+		"0011112121211100",
+		"0011111111111100",
+		"0000000000000000",
+		"0000000000000000",
+	},
+	[]string{
+		"0000000000000000",
+		"0000000000000000",
+		"0000000220000000",
+		"0000000200000000",
+		"0011111111111100",
+		"0011111111111100",
+		"0011111111111100",
+		"0011121111211100",
+		"0011121111211100",
+		"0011122112211100",
+		"0011111111111100",
+		"0011212121121100",
+		"0011222222221100",
+		"0011112121211100",
+		"0011111111111100",
+		"0000000000000000",
+	},
+)
+
+// Encode GIF (scaling from 16x16 to 400x400 pixels).
+err := frame.EncodeGIF(f, 400/width)
+if err != nil {
+	panic(err)
+}
+```
+
+Which results in:  
+![GIF of a pumpkin](/examples/animation/demo.gif)
