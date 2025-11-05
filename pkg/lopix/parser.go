@@ -99,13 +99,14 @@ func (p *Parser) ParseDimensions() (w, h int, err error) {
 
 func (p *Parser) ParsePalette() (v Palette, err error) {
 	palette := Palette{}
-	for i := range 16 {
+	for i := 0; true; i++ {
 		line, err := p.ReadLine()
 		if err != nil {
 			return v, err
-		}
-		if line == "" {
+		} else if line == "" {
 			break // Reached end of palette (= blank line).
+		} else if i > 15 {
+			return v, p.errf("too many lines in palette")
 		}
 		palette[i], err = HexColor(line)
 		if err != nil {
