@@ -10,26 +10,7 @@ import (
 )
 
 func Run(args ...string) (exitcode int) {
-	return cli.Run(commands, onNoCommand, onCLICommandNotFound, args...)
-}
-
-func printAvailableCommands() {
-	fmt.Println("Available commands:")
-	for _, cmd := range commands {
-		fmt.Printf("%q: %s\n", cmd.Keyword, cmd.Description)
-	}
-}
-
-func onCLICommandNotFound(args ...string) (exitcode int) {
-	fmt.Printf("Command not found: %q\n\n", args[1])
-	printAvailableCommands()
-	return 1
-}
-
-func onNoCommand(args ...string) (exitcode int) {
-	fmt.Printf("A command is required!\n\n")
-	printAvailableCommands()
-	return 1
+	return cli.Run(commands, nil, nil, args...)
 }
 
 func init() {
@@ -37,7 +18,7 @@ func init() {
 		{
 			Keyword:     "help",
 			Description: "Prints available commands",
-			Do:          func(args ...string) (exitcode int) { printAvailableCommands(); return 0 },
+			Do:          func(args ...string) (exitcode int) { cli.PrintAvailableCommands(commands); return 0 },
 		},
 	}, commands...)
 }
