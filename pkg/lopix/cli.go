@@ -82,29 +82,27 @@ func runParseAndEncode(args ...string) (exitcode int) {
 	}
 
 	// Parse and encode frame/animation.
-	var encode func(io.Writer, int) error
+	var parseFrom func(io.Reader) error
+	var encodeTo func(io.Writer, int) error
 	switch format {
 	default:
 		fmt.Printf("unknown format: %q\n", format)
 		return 1
 	case "png":
 		v := &Frame{}
-		err = v.ParseFrom(fIn)
-		if err != nil {
-			fmt.Printf("parse frame: %s\n", err)
-			return 1
-		}
-		encode = v.EncodePNG
+		parseFrom = v.ParseFrom
+		encodeTo = v.EncodePNG
 	case "gif":
 		v := &Animation{}
-		err = v.ParseFrom(fIn)
-		if err != nil {
-			fmt.Printf("parse frame: %s\n", err)
-			return 1
-		}
-		encode = v.EncodeGIF
+		parseFrom = v.ParseFrom
+		encodeTo = v.EncodeGIF
 	}
-	err = encode(fOut, scale)
+	err = parseFrom(fIn)
+	if err != nil {
+		fmt.Printf("parse lopix: %s\n", err)
+		return 1
+	}
+	err = encodeTo(fOut, scale)
 	if err != nil {
 		fmt.Printf("encode PNG: %s\n", err)
 		return 1
