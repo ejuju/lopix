@@ -100,7 +100,13 @@ func (a *Animation) ParseFrom(r io.Reader) (err error) {
 func (a *Animation) WriteTo(w io.Writer) (n int64, err error) {
 	b := &bytes.Buffer{}
 
-	// Write dimensions line (ex: "100x150\n").
+	// Write animation info.
+	b.WriteString(strconv.Itoa(len(a.grids)))
+	b.WriteString("*")
+	b.WriteString(strconv.Itoa(a.delays[0]))
+	b.WriteString("\n")
+
+	// Write dimensions (ex: "100x150\n").
 	b.WriteString(strconv.Itoa(a.w))
 	b.WriteString("x")
 	b.WriteString(strconv.Itoa(a.h))
