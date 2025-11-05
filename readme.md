@@ -157,6 +157,8 @@ Which results in:
 
 ### Use as Go library
 
+Official documentation: <https://pkg.go.dev/github.com/ejuju/lopix/pkg/lopix>
+
 Generate a PNG:
 ```go
 v := &lopix.Frame{}
