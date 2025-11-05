@@ -22,6 +22,7 @@ type ParserError struct {
 	err  error
 }
 
+func (err *ParserError) Line() int     { return err.line }
 func (err *ParserError) Error() string { return fmt.Sprintf("at line %d: %s", err.line, err.err) }
 func (err *ParserError) Unwrap() error { return err.err }
 
