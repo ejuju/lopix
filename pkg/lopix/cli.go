@@ -56,20 +56,20 @@ func runParseAndEncode(args ...string) (exitcode int) {
 	}
 
 	// Open input file.
-	fIn, err := os.Open(fpathIn)
+	inputFile, err := os.Open(fpathIn)
 	if err != nil {
 		fmt.Printf("open input file (%q): %s\n", fpathIn, err.Error())
 		return 1
 	}
-	defer fIn.Close()
+	defer inputFile.Close()
 
 	// Open output file.
-	fOut, err := os.OpenFile(fpathOut, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	outputFile, err := os.OpenFile(fpathOut, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
 		fmt.Printf("open output file (%q): %s\n", fpathOut, err.Error())
 		return 1
 	}
-	defer fOut.Close()
+	defer outputFile.Close()
 
 	// Parse scale.
 	scale, err := strconv.Atoi(scaleTxt)
@@ -97,12 +97,12 @@ func runParseAndEncode(args ...string) (exitcode int) {
 		parseFrom = v.ParseFrom
 		encodeTo = v.EncodeGIF
 	}
-	err = parseFrom(fIn)
+	err = parseFrom(inputFile)
 	if err != nil {
 		fmt.Printf("parse lopix: %s\n", err)
 		return 1
 	}
-	err = encodeTo(fOut, scale)
+	err = encodeTo(outputFile, scale)
 	if err != nil {
 		fmt.Printf("encode PNG: %s\n", err)
 		return 1
