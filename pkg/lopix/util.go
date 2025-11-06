@@ -1,7 +1,6 @@
 package lopix
 
 import (
-	"fmt"
 	"image"
 )
 
@@ -25,7 +24,7 @@ func ScaleBy(factor int, img image.Image) image.Image {
 func hexToU4(v byte) uint8 {
 	switch {
 	default:
-		panic(fmt.Errorf("invalid hexadecimal character: %q", v))
+		return 0
 	case v >= '0' && v <= '9':
 		return v - '0'
 	case v >= 'a' && v <= 'f':

@@ -133,9 +133,6 @@ func (p *Parser) ParseGrid(w, h int) (grid []byte, err error) {
 
 		for x := range w {
 			cell := hexToU4(line[x])
-			if cell > 0x0F {
-				return nil, p.errf("invalid reserved cell value %d", cell)
-			}
 			grid[y*w+(x%w)] = cell
 		}
 	}
