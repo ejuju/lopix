@@ -108,6 +108,10 @@ func (p *Parser) ParsePalette() (v Palette, err error) {
 		} else if i > 15 {
 			return v, p.errf("too many lines in palette")
 		}
+		color, _, ok := strings.Cut(line, "//") // Allow comments.
+		if ok {
+			line = strings.TrimSpace(color)
+		}
 		palette[i], err = HexColor(line)
 		if err != nil {
 			return v, p.errf("invalid color: %w", err)
